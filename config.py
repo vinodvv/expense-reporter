@@ -12,3 +12,6 @@ REPORTS_DIR = BASE_DIR / "reports"
 RECIPIENT = "vinovijayan@gmail.com"
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
+
+OPENING_BALANCE = 0  # change if starting bank balance
+CURRENCY = "&#8377;"  # "₹"
