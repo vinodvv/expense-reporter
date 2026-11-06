@@ -31,7 +31,7 @@ REPORTS_DIR = BASE_DIR / "reports"
 
 SENDER_EMAIL = os.getenv("SENDER_EMAIL")
 SENDER_PASSWORD = os.getenv("SENDER_PASSWORD")
-RECIPIENT = "vinovijayan@gmail.com"
+RECIPIENT = os.getenv("RECIPIENTS", "vinovijayan@gmail.com")
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 
