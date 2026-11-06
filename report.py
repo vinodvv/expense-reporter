@@ -36,16 +36,46 @@ def build_report(summary):
         )
 
     # Pending rows
-    pending_rows = ""
-    for _, r in summary["pending"].iterrows():
-        pending_rows += (
+    # pending_rows = ""
+    # for _, r in summary["pending"].iterrows():
+    #     pending_rows += (
+    #         "<tr>"
+    #         f"<td>{r['Date']:%d-%b}</td>"
+    #         f"<td>{r['Type']}</td>"
+    #         f"<td>{r['Description']}</td>"
+    #         f"<td style='text-align:right'>{money(r['Amount'])}</td>"
+    #         "</tr>"
+    #     )
+
+    # Next day's expense rows
+    next_rows = ""
+    for _, r in summary["next_day_expenses"].iterrows():
+        status = r["Comments"] if r["Comments"] else "Pending"
+        next_rows += (
             "<tr>"
-            f"<td>{r['Date']:%d-%b}</td>"
-            f"<td>{r['Type']}</td>"
             f"<td>{r['Description']}</td>"
+            f"<td>{r['Category']}</td>"
             f"<td style='text-align:right'>{money(r['Amount'])}</td>"
+            f"<td>{status}</td>"
             "</tr>"
         )
+
+    next_label = f"{summary['next_day']:%d-%b-%Y}"
+    if next_rows:
+        next_section = f"""
+      <h3>Next Day's Expenses ({next_label})</h3>
+      <table border="1" cellpadding="6" style="border-collapse:collapse;border-color:#ccc">
+        <tr style="background:#f0f0f0"><th>Description</th><th>Category</th><th>Amount</th><th>Status</th></tr>
+        {next_rows}
+        <tr style="background:#f9f9f9"><td colspan="2"><b>Total</b></td>
+            <td style="text-align:right"><b>{money(summary['next_day_total'])}</b></td><td></td></tr>
+      </table>
+        """
+    else:
+        next_section = f"""
+      <h3>Next Day's Expenses ({next_label})</h3>
+      <p>No expenses scheduled.</p>
+        """
 
     html = f"""
        <html>
@@ -68,11 +98,15 @@ def build_report(summary):
          </table>
 
          <h3>Pending / Upcoming (not in balance)</h3>
-         <p>Income: {money(summary['pending_income'])} &nbsp;|&nbsp;
-            Expense: {money(summary['pending_expense'])}</p>
-         <table border="1" cellpadding="6" style="border-collapse:collapse;border-color:#ccc">
-           <tr style="background:#f0f0f0"><th>Date</th><th>Type</th><th>Description</th><th>Amount</th></tr>
-           {pending_rows}
+         <table cellpadding="6" style="border-collapse:collapse">
+            <tr><td>Pending Income ({summary['pending_income_count']} items)</td>
+                <td style="text-align:right;color:#1a7f37">{money(summary['pending_income'])}</td></tr>
+            <tr><td>Pending Expense ({summary['pending_expense_count']} items)</td>
+                <td style="text-align:right;color:#cf222e">{money(summary['pending_expense'])}</td></tr>
+         </table>
+
+         {next_section}
+      
          </table>
        </body></html>
        """
