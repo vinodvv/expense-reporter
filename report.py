@@ -18,6 +18,10 @@ def money(value):
     return f"{sign}{config.CURRENCY}{s}"
 
 
+def items(n):
+    return f"{n} item" if n == 1 else f"{n} items"
+
+
 def build_report(summary):
     """Return formatted report text/HTML."""
     daily = summary["daily"]
@@ -63,7 +67,7 @@ def build_report(summary):
     next_label = f"{summary['next_day']:%d-%b-%Y}"
     if next_rows:
         next_section = f"""
-      <h3>Next Day's Expenses ({next_label})</h3>
+      <h3>Next Expenses Due ({next_label})</h3>
       <table border="1" cellpadding="6" style="border-collapse:collapse;border-color:#ccc">
         <tr style="background:#f0f0f0"><th>Description</th><th>Category</th><th>Amount</th><th>Status</th></tr>
         {next_rows}
@@ -73,8 +77,8 @@ def build_report(summary):
         """
     else:
         next_section = f"""
-      <h3>Next Day's Expenses ({next_label})</h3>
-      <p>No expenses scheduled.</p>
+      <h3>Next Expenses Due ({next_label})</h3>
+      <p>No upcoming expenses.</p>
         """
 
     html = f"""
@@ -99,9 +103,9 @@ def build_report(summary):
 
          <h3>Pending / Upcoming (not in balance)</h3>
          <table cellpadding="6" style="border-collapse:collapse">
-            <tr><td>Pending Income ({summary['pending_income_count']} items)</td>
+            <tr><td>Pending Income ({items(summary['pending_income_count'])})</td>
                 <td style="text-align:right;color:#1a7f37">{money(summary['pending_income'])}</td></tr>
-            <tr><td>Pending Expense ({summary['pending_expense_count']} items)</td>
+            <tr><td>Pending Expense ({items(summary['pending_expense_count'])})</td>
                 <td style="text-align:right;color:#cf222e">{money(summary['pending_expense'])}</td></tr>
          </table>
 

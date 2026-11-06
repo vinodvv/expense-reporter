@@ -31,9 +31,22 @@ def calculate_summary(df, opening_balance=0, report_date=None):
     pending_expense = pending.loc[is_expense, "Amount"].abs().sum()
 
     # Next day's expenses
+    # report_date = pd.Timestamp(report_date or pd.Timestamp.today()).normalize()
+    # next_day = report_date + pd.Timedelta(days=1)
+    # next_df = df[(df["Date"].dt.normalize() == next_day) & (df["Type"] == "Expense")]
+    # next_df = next_df[["Description", "Category", "Amount", "Comments"]]
+
+    # Next date (after report date) that has expenses
     report_date = pd.Timestamp(report_date or pd.Timestamp.today()).normalize()
-    next_day = report_date + pd.Timedelta(days=1)
-    next_df = df[(df["Date"].dt.normalize() == next_day) & (df["Type"] == "Expense")]
+    upcoming = df[(df["Type"] == "Expense") & (df["Date"].dt.normalize() > report_date)]
+
+    if upcoming.empty:
+        next_day = report_date + pd.Timedelta(days=1)   # nothing found
+        next_df = upcoming
+    else:
+        next_day = upcoming["Date"].dt.normalize().min()
+        next_df = upcoming[upcoming["Date"].dt.normalize() == next_day]
+
     next_df = next_df[["Description", "Category", "Amount", "Comments"]]
 
     total_income = df["Income"].sum()
