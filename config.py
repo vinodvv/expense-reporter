@@ -9,7 +9,22 @@ load_dotenv()  # reads the .env file
 BASE_DIR = Path(__file__).resolve().parent
 
 # Input file
-DATA_FILE = BASE_DIR / "data" / "ledger_2026-11.xlsx"
+# DATA_FILE = BASE_DIR / "data" / "ledger_2026-11.xlsx"
+DATA_DIR = BASE_DIR / "data"
+
+def find_latest_ledger():
+    """Return the newest ledger_".xlsx in the Data folder (e.g. ledger_2026-12.xlsx"""
+    files = sorted(
+        f for f in DATA_DIR.glob("ledger_*.xlsx")
+        if not f.name.startswith("~$")  # skip Excel's temporary lock files
+    )
+    if not files:
+        raise FileNotFoundError(f"No ledger_*.xlsx file found in {DATA_DIR}")
+    return files[-1]
+
+
+DATA_FILE = find_latest_ledger()
+
 
 # Reports folder
 REPORTS_DIR = BASE_DIR / "reports"

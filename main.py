@@ -18,6 +18,7 @@ def main():
 
     # 1. Read
     df = read_transactions(config.DATA_FILE)
+    print("Using file: ", config.DATA_FILE)
 
     # 2. Calculate
     summary = calculate_summary(df, config.OPENING_BALANCE, report_date)
