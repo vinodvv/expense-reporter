@@ -1,5 +1,20 @@
-__pycache__/
-.idea/
-venv/
+# Secrets
 .env
+
+# Personal financial data
+data/*.xlsx
+data/*.csv
+reports/
+
+# Python
+__pycache__/
 *.pyc
+.venv/
+venv/
+
+# IDE
+.idea/
+.vscode/
+
+# Excel temporary lock files
+~$*
